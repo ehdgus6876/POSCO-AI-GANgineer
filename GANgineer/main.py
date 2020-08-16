@@ -1,27 +1,21 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget
-from PyQt5.QtGui import QIcon
+from GANgineer_ui import Ui_GANgineer  # 수정부분
+from PyQt5 import *
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
 
 
-class App(QWidget):
+class GANgineer(QMainWindow, Ui_GANgineer):
 
     def __init__(self):
         super().__init__()
-        self.title = 'Main Window'
-        self.left = 300
-        self.top = 300
-        self.width = 640
-        self.height = 480
-        self.initUI()
 
-    def initUI(self):
-        self.setWindowTitle(self.title)
-        self.setGeometry(self.left, self.top, self.width, self.height)
+        self.setupUi(self)
+
         self.show()
 
 
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    app.aboutToQuit.connect(app.deleteLater)
-    ex = App()
-    sys.exit(app.exec_())
+app = QApplication([])
+sn = GANgineer()
+QApplication.processEvents()
+sys.exit(app.exec_())
