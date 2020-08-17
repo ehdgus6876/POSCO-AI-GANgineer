@@ -402,12 +402,48 @@ class Ui_GANgineer(object):
         self.pushButton_outSave.clicked.connect(GANgineer.outSave)
         self.pushButton_outDelete.clicked.connect(GANgineer.listDelete)
         self.pushButton_detect.clicked.connect(GANgineer.detectEvent)
+
+        self.pbar = QProgressBar(self.tab)
+        self.pbar.setGeometry(310,580,231,23)
+
+
         QtCore.QMetaObject.connectSlotsByName(GANgineer)
 
 
         self.listView_input.clicked.connect(GANgineer.listClicked)
+        self.listView_output.clicked.connect(GANgineer.listClicked2)
 
+    timer = QBasicTimer()
+    step = 0
     fileName1 = []
+    list_steelout_dir = ["./image/steeloutput/0.png", "./image/steeloutput/1.png",
+                         "./image/steeloutput/2.png", "./image/steeloutput/3.png",
+                         "./image/steeloutput/4.png", "./image/steeloutput/5.png",
+                         "./image/steeloutput/6.png"]
+    list_steelout_per = [0.50537109, 0.54541016, 0.30688477, 0.37353516, 0.,0.50537109,0.53540039]
+    list_steelout = ["1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png"]
+
+    def timerEvent(self, e):
+        if self.step >= 100:
+            self.timer.stop()
+            listView = self.listView_output
+            model = QStandardItemModel()
+            for v in self.list_steelout:
+                model.appendRow(QStandardItem(v))
+            listView.setModel(model)
+            return
+
+        self.step = self.step + 1
+        self.pbar.setValue(self.step)
+
+    def doAction(self):
+
+        if self.timer.isActive():
+            self.timer.stop()
+
+
+        else:
+            self.timer.start(100, self)
 
     def listClicked(self):
         row = self.listView_input.currentIndex()
@@ -416,8 +452,17 @@ class Ui_GANgineer(object):
         print(self.fileName1[row.row()])
         self.label_inImage.setPixmap(QtGui.QPixmap(self.fileName1[row.row()]))
 
+    def listClicked2(self):
+        row = self.listView_output.currentIndex()
+        self.label_outImage.setPixmap(QtGui.QPixmap(self.list_steelout_dir[row.row()]))
+        self.label_outResult.setText("분율은 " + str(self.list_steelout_per[row.row()])+"입니다.")
+        #print(self.list_steelout_per[row.row()])
+
     def detectEvent(self):
-        pass
+
+        self.doAction()
+
+
 
     def inOpen(self):
         options = QFileDialog.Options()
